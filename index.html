@@ -5,10 +5,46 @@
     <title>Untitled Document</title>
 </head>
 <body>
-    <audio src = "lyd\theme.mp3" loop autoplay></audio>
+    <audio src = "lyd\theme.mp3" id ="theme" loop autoplay></audio>
     <div class = "spillVindu">
     <h1 id = "play">Utøya i Verdensrommet Simulator 2018</h1>
     </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script>
+    var theme = document.getElementById("theme");
+    function stopTheme() {
+        theme.pause();
+    }
+        
+        
+        
+        
+        
+    document.body.onkeyup = function(e){
+    if(e.keyCode == 32){
+        console.log("Spillet starter");
+        stopTheme();
+    }
+}
+    
+    
+    
+    </script>
+    
+    
+    
+    
+    
+    
+    
 
     <! -- CSS -- >
     
