@@ -8,7 +8,7 @@
     <audio src = "lyd/theme.mp3" id ="theme" loop autoplay></audio>
     <div class = "spillVindu">
         <h1 id = "play">test</h1>
-        <canvas id = "stjerner">
+        <canvas id = "stjerner" >
             
         </canvas>
     </div>
@@ -22,35 +22,31 @@
     
     
     <script>
-    var theme = document.getElementById("theme");   // Definerer id = theme for js
-        theme.volume = 0.09;
+        var mAktiv = false;
+        var spaceAktiv = false;
+        var theme = document.getElementById("theme");   // Definerer id = theme for js
+            theme.volume = 0.09;
     
-    function toggleTheme() {
-        return theme.paused ? theme.play() : theme.pause();
-    };
-    
-    document.body.onkeyup = function(e) {   //Toggler musikken
-        if(e.keyCode == 77){
-            console.log("Musikk toggled");
-            toggleTheme();
-        }
-    }    
-    
-    document.body.onkeyup = function(e) {   //Starter spillet og bytter theme, sett inn i startSpill senere
-        if(e.keyCode == 32){
-            document.getElementById("theme").src = "lyd/theme2.mp3";
-            theme.play();
-        }
-    }
+        function toggleTheme() {
+            return theme.paused ? theme.play() : theme.pause();
+        };
+
+        document.onkeydown = function(e) {   //Space og M detection, er faen meg bugga og skada til tusen, fiks
+            switch (e.keyCode) {
+            case 77:  toggleTheme(); break;
+            case 32:  document.getElementById("theme").src = "lyd/theme2.mp3"; break;
+            }    
+        };
+
 
     
     
-    //Canvas
-    //var canvas = document.getElementById("stjerner");
-        //canvas.width = window.innerWidth;
-        //canvas.height = window.innerHeight;
-    //var ctx = canvas.getContext("2d");
-        //ctx.fillRect(40,20,50,30);
+
+    var canvas = document.getElementById("stjerner");
+        //canvas.width = 500;
+        //canvas.height = 500;
+    var ctx = canvas.getContext("2d");
+        ctx.fillRect(400,200,500,300);
     
     </script>
     
@@ -80,6 +76,12 @@
             top: 30%;
             transform: translateY(-70%); 
             text-align: center;
+        }
+        canvas {
+            margin-top: -5vh;
+            width: 100%;
+            height: 100%;
+            
         }
     </style>
 </body>
