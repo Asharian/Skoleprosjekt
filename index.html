@@ -5,12 +5,12 @@
     <title>Untitled Document</title>
 </head>
 <body>
-    <audio src = "lyd\theme.mp3" id ="theme" loop autoplay></audio>
+    <audio src = "lyd/theme.mp3" id ="theme" loop autoplay></audio>
     <div class = "spillVindu">
         <h1 id = "play">test</h1>
-        <div id = "stjerner">
+        <canvas id = "stjerner">
             
-        </div>
+        </canvas>
     </div>
     
     
@@ -22,24 +22,35 @@
     
     
     <script>
-    var theme = document.getElementById("theme");   // Definerer funksjonen for å mute musikken når man starter spillet
-    function stopTheme() {
-        theme.pause();
-    }
+    var theme = document.getElementById("theme");   // Definerer id = theme for js
+        theme.volume = 0.09;
     
-    document.body.onkeyup = function(e) {   //Starter spillet og pauser musikken
-    if(e.keyCode == 32){
-        console.log("Spillet starter");
-        stopTheme();
+    function toggleTheme() {
+        return theme.paused ? theme.play() : theme.pause();
+    };
+    
+    document.body.onkeyup = function(e) {   //Toggler musikken
+        if(e.keyCode == 77){
+            console.log("Musikk toggled");
+            toggleTheme();
+        }
+    }    
+    
+    document.body.onkeyup = function(e) {   //Starter spillet og bytter theme, sett inn i startSpill senere
+        if(e.keyCode == 32){
+            document.getElementById("theme").src = "lyd/theme2.mp3";
+            theme.play();
+        }
     }
-}
-    //Canvas
-    var canvas = document.getElementById("stjerner");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    var ctx = canvas.getContext("2d");
-        ctx.fillRect(40,20,50,30)
 
+    
+    
+    //Canvas
+    //var canvas = document.getElementById("stjerner");
+        //canvas.width = window.innerWidth;
+        //canvas.height = window.innerHeight;
+    //var ctx = canvas.getContext("2d");
+        //ctx.fillRect(40,20,50,30);
     
     </script>
     
