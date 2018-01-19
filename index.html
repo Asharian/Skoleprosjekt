@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html>  
 <head>
     <meta charset="UTF-8">
     <title>Untitled Document</title>
@@ -7,7 +7,10 @@
 <body>
     <audio src = "lyd\theme.mp3" id ="theme" loop autoplay></audio>
     <div class = "spillVindu">
-    <h1 id = "play">Utøya i Verdensrommet Simulator 2018</h1>
+        <h1 id = "play">test</h1>
+        <div id = "stjerner">
+            
+        </div>
     </div>
     
     
@@ -19,23 +22,24 @@
     
     
     <script>
-    var theme = document.getElementById("theme");
+    var theme = document.getElementById("theme");   // Definerer funksjonen for å mute musikken når man starter spillet
     function stopTheme() {
         theme.pause();
     }
-        
-        
-        
-        
-        
-    document.body.onkeyup = function(e){
+    
+    document.body.onkeyup = function(e) {   //Starter spillet og pauser musikken
     if(e.keyCode == 32){
         console.log("Spillet starter");
         stopTheme();
     }
 }
-    
-    
+    //Canvas
+    var canvas = document.getElementById("stjerner");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    var ctx = canvas.getContext("2d");
+        ctx.fillRect(40,20,50,30)
+
     
     </script>
     
