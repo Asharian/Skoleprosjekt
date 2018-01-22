@@ -48,7 +48,10 @@
     var venstreAktiv = false;
     var oppAktiv = false;
     var nedAktiv = false;
-    var firkantTekst = "";
+    var minX = 0;
+    var maxX = document.offsetWidth -252;
+    var minY = 0;
+    var maxY = document.offsetHeight - 209;
 
     document.onkeyup = function(event) {
       switch (event.keyCode) {
@@ -68,7 +71,7 @@
     var ctx = canvas.getContext("2d");
         ctx.fillRect(40,20,50,30);
 
-        
+
     function gameLoop() {
           if (venstreAktiv) deltaX = -10;
           if (høyreAktiv) deltaX = 10;
@@ -77,6 +80,18 @@
           if (oppAktiv) deltaY = -7;
           if (nedAktiv) deltaY = 7;
           if (!oppAktiv && !nedAktiv) deltaY = 0;
+
+          if (x >= maxX){
+              x = maxX -10;
+          } else if ( x <= minX){
+              x = minX + 10;
+          }
+
+          if ( y >= maxY){
+              y = maxY - 7;
+          } else if (y <= minY){
+              y = minY +7;
+          }
 
 
           x += deltaX;
@@ -90,11 +105,11 @@
 
         gameLoop();
 
-        
-        
-        
-        
-        
+
+
+
+
+
     </script>
 
 
