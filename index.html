@@ -1,5 +1,5 @@
 <!doctype html>
-<html>  
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Untitled Document</title>
@@ -9,17 +9,17 @@
     <div class = "spillVindu">
         <h1 id = "play">test</h1>
         <canvas id = "stjerner">
-            
+
         </canvas>
     </div>
-    
+
     <script>
         //Main menu & theme
         var mAktiv = false;
         var spaceAktiv = false;
         var theme = document.getElementById("theme");   // Definerer id = theme for js
             theme.volume = 0.09;
-    
+
         function toggleTheme() {
             return theme.paused ? theme.play() : theme.pause();
         };
@@ -28,10 +28,10 @@
             switch (e.keyCode) {
             case 77:  toggleTheme(); console.log("Music toggled."); break;
             case 32:  document.getElementById("theme").src = "lyd/theme2.mp3"; console.log("Theme switched."); break;
-            }    
+            }
         };
 
-    
+
     //Movement
     var firkant = document.getElementById("firkant");
     var x = 100;
@@ -46,42 +46,43 @@
 
     document.onkeydown = function(event) {
       switch (event.keyCode) {
-        case 37:  venstreAktiv = true;  break;
-        case 38:  oppAktiv = true;      break;
-        case 39:  høyreAktiv = true;    break;
-        case 40:  nedAktiv = true;      break;
+        case 37: case 65: venstreAktiv = true;  break;
+        case 38: case 87: oppAktiv = true;      break;
+        case 39: case 68: høyreAktiv = true;    break;
+        case 40: case 83: nedAktiv = true;      break;
+
       }
     };
 
     document.onkeyup = function(event) {
       switch (event.keyCode) {
-        case 37:  venstreAktiv = false;  break;
-        case 38:  oppAktiv     = false;  break;
-        case 39:  høyreAktiv   = false;  break;
-        case 40:  nedAktiv     = false;  break;
+        case 37: case 65: venstreAktiv = false;  break;
+        case 38: case 87: oppAktiv     = false;  break;
+        case 39: case 68: høyreAktiv   = false;  break;
+        case 40: case 83: nedAktiv     = false;  break;
       }
-    };    
-        
-        
-        
-        
-    //Canvas       
+    };
+
+
+
+
+    //Canvas
 
     var canvas = document.getElementById("stjerner");
     var ctx = canvas.getContext("2d");
         ctx.fillRect(40,20,50,30);
-    
+
     </script>
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
 
     <! -- CSS -- >
-    
+
     <style>
         body {
             margin: 0px;
@@ -97,14 +98,14 @@
         #play {
             position: relative;
             top: 30%;
-            transform: translateY(-70%); 
+            transform: translateY(-70%);
             text-align: center;
         }
         canvas {
             margin-top: -5vh;
             width: 100%;
             height: 100%;
-            
+
         }
     </style>
 </body>
