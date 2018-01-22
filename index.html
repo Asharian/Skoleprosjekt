@@ -11,6 +11,7 @@
         <canvas id = "stjerner">
 
         </canvas>
+        <img src = "comie1.png" id="skip">
     </div>
 
     <script>
@@ -28,12 +29,21 @@
             switch (e.keyCode) {
             case 77:  toggleTheme(); console.log("Music toggled."); break;
             case 32:  document.getElementById("theme").src = "lyd/theme2.mp3"; console.log("Theme switched."); break;
+            //bevegelse
+            case 37: case 65: venstreAktiv = true;  break;
+            case 38: case 87: oppAktiv = true;      break;
+            case 39: case 68: høyreAktiv = true;    break;
+            case 40: case 83: nedAktiv = true;      break;            
+            
+            
+            
+            
             }
         };
 
 
     //Movement
-    var firkant = document.getElementById("firkant");
+    var firkant = document.getElementById("skip");
     var x = 100;
     var y = 100;
     var deltaX = 0;
@@ -43,16 +53,6 @@
     var oppAktiv = false;
     var nedAktiv = false;
     var firkantTekst = "";
-
-    document.onkeydown = function(event) {
-      switch (event.keyCode) {
-        case 37: case 65: venstreAktiv = true;  break;
-        case 38: case 87: oppAktiv = true;      break;
-        case 39: case 68: høyreAktiv = true;    break;
-        case 40: case 83: nedAktiv = true;      break;
-
-      }
-    };
 
     document.onkeyup = function(event) {
       switch (event.keyCode) {
@@ -106,6 +106,11 @@
             width: 100%;
             height: 100%;
 
+        }
+        #skip {
+            content:url("comie1.png");
+            top: 100px;
+            left: 100px;
         }
     </style>
 </body>
