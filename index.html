@@ -7,7 +7,7 @@
 <body>
     <audio src = "lyd/theme.mp3" id ="theme" loop autoplay></audio>
     <div class = "spillVindu">
-        <h1 id = "play">test</h1>
+        <h1 id = "play">Velkommen til et jævla shitshow</h1>
         <canvas id = "stjerner">
 
         </canvas>
@@ -33,11 +33,7 @@
             case 37: case 65: venstreAktiv = true;  break;
             case 38: case 87: oppAktiv = true;      break;
             case 39: case 68: høyreAktiv = true;    break;
-            case 40: case 83: nedAktiv = true;      break;            
-            
-            
-            
-            
+            case 40: case 83: nedAktiv = true;      break;
             }
         };
 
@@ -72,6 +68,33 @@
     var ctx = canvas.getContext("2d");
         ctx.fillRect(40,20,50,30);
 
+        
+    function gameLoop() {
+          if (venstreAktiv) deltaX = -5;
+          if (høyreAktiv) deltaX = 5;
+          if (!venstreAktiv && !høyreAktiv) deltaX = 0;
+
+          if (oppAktiv) deltaY = -5;
+          if (nedAktiv) deltaY = 5;
+          if (!oppAktiv && !nedAktiv) deltaY = 0;
+
+
+          x += deltaX;
+          y += deltaY;
+
+          skip.style.left = x + "px";
+          skip.style.top = y + "px";
+
+          requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+
+        
+        
+        
+        
+        
     </script>
 
 
@@ -108,9 +131,11 @@
 
         }
         #skip {
-            content:url("comie1.png");
-            top: 100px;
-            left: 100px;
+            position: absolute;
+            top: 75vh;
+            left: 50vw;
+            width: 10vw;
+            height: auto;
         }
     </style>
 </body>
