@@ -8,12 +8,13 @@
     <audio src = "lyd/theme.mp3" id ="theme" loop autoplay></audio>
     <div class = "spillVindu">
         <h1 id = "play">test</h1>
-        <canvas id = "stjerner" >
+        <canvas id = "stjerner">
             
         </canvas>
     </div>
     
     <script>
+        //Main menu & theme
         var mAktiv = false;
         var spaceAktiv = false;
         var theme = document.getElementById("theme");   // Definerer id = theme for js
@@ -25,12 +26,46 @@
 
         document.onkeydown = function(e) {   //Space og M detection, er faen meg bugga og skada til tusen, fiks
             switch (e.keyCode) {
-            case 77:  toggleTheme(); break;
-            case 32:  document.getElementById("theme").src = "lyd/theme2.mp3"; break;
+            case 77:  toggleTheme(); console.log("Music toggled."); break;
+            case 32:  document.getElementById("theme").src = "lyd/theme2.mp3"; console.log("Theme switched."); break;
             }    
         };
 
-//Canvas       
+    
+    //Movement
+    var firkant = document.getElementById("firkant");
+    var x = 100;
+    var y = 100;
+    var deltaX = 0;
+    var deltaY = 0;
+    var høyreAktiv = false;
+    var venstreAktiv = false;
+    var oppAktiv = false;
+    var nedAktiv = false;
+    var firkantTekst = "";
+
+    document.onkeydown = function(event) {
+      switch (event.keyCode) {
+        case 37:  venstreAktiv = true;  break;
+        case 38:  oppAktiv = true;      break;
+        case 39:  høyreAktiv = true;    break;
+        case 40:  nedAktiv = true;      break;
+      }
+    };
+
+    document.onkeyup = function(event) {
+      switch (event.keyCode) {
+        case 37:  venstreAktiv = false;  break;
+        case 38:  oppAktiv     = false;  break;
+        case 39:  høyreAktiv   = false;  break;
+        case 40:  nedAktiv     = false;  break;
+      }
+    };    
+        
+        
+        
+        
+    //Canvas       
 
     var canvas = document.getElementById("stjerner");
     var ctx = canvas.getContext("2d");
