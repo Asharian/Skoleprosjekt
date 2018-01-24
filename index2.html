@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<style>
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+#gameCanvas {
+
+}
+</style>
+  <head>
+    <meta charset="utf-8">
+    <title>Commie invaders elns</title>
+  </head>
+  <body>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+      var gameCanvas = document.getElementById("gameCanvas");
+      var ctx = gameCanvas.getContext("2d");
+      var theGameIsOn = true;
+      const skip_bilde = new Image();
+            skip_bilde.src = 'skip.png';
+    //tegner opp banen
+      var bane = {
+        bredde: gameCanvas.width,
+        hoyde: gameCanvas.height,
+      };
+    //tegner opp skipet
+      var skip = {
+        bilde: skip_bilde,
+        "bredde": 50,
+        "hoyde": 50,
+        "xpos": bane.bredde,
+        "ypos": bane.hoyde,
+        dx: 0,
+        dy: 0,
+        venstre: false,
+        opp: false,
+        hoyre: false,
+        ned: false,
+        draw: function(){
+          ctx.beginPath();
+          ctx.save();
+          ctx.translate(this.xpos, this.ypos);
+          ctx.drawImage(this.bilde, -0.5 * this.bredde, -0.5 * this.hoyde, this.bredde, this.hoyde);
+          ctx.restore();
+          ctx.closePath();
+        },
+        //hastighet og sånn
+        update: function(){
+          if (this.venstre) this.dx -= 0.1;
+          if (this.hoyre) this.dx += 0.1;
+          if (this.opp) this.dy -= 0.1;
+          if (this.ned) this.dy += 0.1;
+
+          this.ypos += this.dy;
+          this.xpos += this.dx;
+      //hindrer skipet å gå utenfor banen
+          if (this.xpos - (0.5 * this.bredde) < 0) this.xpos = 0.5 * this.bredde, this.dx = 0;
+          if (this.xpos > gameCanvas.width) this.xpos = gameCanvas.width, this.dx = 0;
+
+          if (this.ypos - (0.5 * this.hoyde) < 0) this.ypos = 0.5 * this.hoyde, this.dy = 0;
+          if (this.ypos > gameCanvas.height) this.ypos = gameCanvas.height, this.dy = 0;
+        }
+      }
+      //kontroller
+      window.onkeydown = function(e){
+        switch (e.keyCode) {
+          case 37: case 65: skip.venstre = true; break;
+          case 38: case 87: skip.opp = true; break;
+          case 39: case 68: skip.hoyre = true; break;
+          case 40: case 83: skip.ned = true; break;
+        }
+      }
+      window.onkeyup = function(e){
+        switch (e.keyCode) {
+          case 37: case 65: skip.venstre = false; break;
+          case 38: case 87: skip.opp = false; break;
+          case 39: case 68: skip.hoyre = false; break;
+          case 40: case 83: skip.ned = false; break;
+        }
+      }
+      //Oppdaterer bildet slik at alt ikke dør
+      function update(){
+        ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+        skip.update();
+        skip.draw();
+        requestAnimationFrame(update);
+      }
+      //Loader bildet inn hver gang spillet starter
+      window.onload = function(){
+        gameCanvas.width = window.innerWidth;
+        gameCanvas.height = window.innerHeight;
+        update();
+      };
+    </script>
+  </body>
+</html>
