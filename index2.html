@@ -15,6 +15,7 @@ body, html {
     <title>Commie invaders elns</title>
   </head>
   <body>
+    <audio src = "lyd/theme.mp3" id ="theme" loop autoplay></audio>
     <canvas id="gameCanvas"></canvas>
     <script>
       var gameCanvas = document.getElementById("gameCanvas");
@@ -22,6 +23,13 @@ body, html {
       var theGameIsOn = true;
       const skip_bilde = new Image();
             skip_bilde.src = 'skip.png';
+    
+      var theme = document.getElementById("theme");   //Musikkvolum og toggling
+        theme.volume = 0.09;
+      function toggleTheme() {
+        return theme.paused ? theme.play() : theme.pause();
+      };
+    
     //tegner opp banen
       var bane = {
         bredde: gameCanvas.width,
@@ -72,6 +80,8 @@ body, html {
           case 38: case 87: skip.opp = true; break;
           case 39: case 68: skip.hoyre = true; break;
           case 40: case 83: skip.ned = true; break;
+          case 77: toggleTheme(); console.log("Music toggled."); break;
+          case 32:   break;
         }
       }
       window.onkeyup = function(e){
@@ -95,6 +105,7 @@ body, html {
         gameCanvas.height = window.innerHeight;
         update();
       };
+                                                //document.getElementById("theme").src = "lyd/theme2.mp3"; console.log("Theme switched.");
     </script>
   </body>
 </html>
