@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html>
 <style>
-body, html {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-#gameCanvas {
-
-}
+  body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  #gameCanvas {
+  
+  }
+  #starfield {
+    z-index: -1;
+    position: absolute;
+    }
 </style>
   <head>
     <meta charset="utf-8">
@@ -17,7 +21,15 @@ body, html {
   <body>
     <audio src = "lyd/theme.mp3" id ="theme" loop autoplay></audio>
     <canvas id="gameCanvas"></canvas>
+    <div id= "starfield"></div>
+    <script src="starfield.js"></script>
     <script>
+      //Starfield
+      var container = document.getElementById('starfield');
+        var starfield = new Starfield();
+        starfield.initialise(container);
+        starfield.start();
+        
       var gameCanvas = document.getElementById("gameCanvas");
       var ctx = gameCanvas.getContext("2d");
       var theGameIsOn = true;
@@ -92,7 +104,7 @@ body, html {
           case 40: case 83: skip.ned = false; break;
         }
       }
-      //Oppdaterer bildet slik at alt ikke dør
+      //Oppdaterer bildet slik at alt ikke dør EDIT: ALT DØR UANSETT
       function update(){
         ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
         skip.update();
@@ -105,6 +117,7 @@ body, html {
         gameCanvas.height = window.innerHeight;
         update();
       };
+      
                                                 //document.getElementById("theme").src = "lyd/theme2.mp3"; console.log("Theme switched.");
     </script>
   </body>
