@@ -149,7 +149,7 @@
           if (this.skyt){
             if (this.skyttimer < 0){
               let laser = new Projectile(this.xpos, this.ypos - 0.5 * this.hoyde, false);
-              this.skyttimer = 20;
+              this.skyttimer = 10;
             }
           }
           this.ypos += this.dy;
@@ -225,7 +225,7 @@
       }
       setInterval(function () {
         let enemy = new Enemy();
-      }, 1000);
+      }, 300);
 
       //Loader bildet inn hver gang spillet starter
       window.onload = function(){
