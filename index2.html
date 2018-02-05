@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <html>
 <style>
-body, html {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-#gameCanvas {
+  body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  #gameCanvas {
 
-}
+  }
+  #starfield {
+    z-index: -1;
+    position: absolute;
+    }
 </style>
   <head>
     <meta charset="utf-8">
     <title>Commie invaders elns</title>
   </head>
   <body>
+    <audio src = "lyd/theme.mp3" id ="theme" loop autoplay></audio>
     <canvas id="gameCanvas"></canvas>
+    <div id= "starfield"></div>
+    <script src="starfield.js"></script>
     <script>
+      //Starfield
+      var container = document.getElementById('starfield');
+        var starfield = new Starfield();
+        starfield.initialise(container);
+        starfield.start();
+
       var gameCanvas = document.getElementById("gameCanvas");
       var ctx = gameCanvas.getContext("2d");
       var theGameIsOn = true;
@@ -97,6 +110,13 @@ body, html {
 
       const skip_bilde = new Image();
             skip_bilde.src = 'skip.png';
+
+      var theme = document.getElementById("theme");   //Musikkvolum og toggling
+        theme.volume = 0.09;
+      function toggleTheme() {
+        return theme.paused ? theme.play() : theme.pause();
+      };
+
     //tegner opp banen
       var bane = {
         bredde: gameCanvas.width,
@@ -155,7 +175,12 @@ body, html {
           case 38: case 87: skip.opp = true; break;
           case 39: case 68: skip.hoyre = true; break;
           case 40: case 83: skip.ned = true; break;
+<<<<<<< HEAD
           case 32: skip.skyt = true; break;
+=======
+          case 77: toggleTheme(); console.log("Music toggled."); break;
+          case 32:   break;
+>>>>>>> ba3331960cf4b53c9b0b84253b985e5634415ccb
         }
       }
       window.onkeyup = function(e){
@@ -167,8 +192,12 @@ body, html {
           case 32: skip.skyt = false; break;
         }
       }
+<<<<<<< HEAD
       //Oppdaterer bildet slik at alt ikke dør
       let breivik = new Enemy();
+=======
+      //Oppdaterer bildet slik at alt ikke dør EDIT: ALT DØR UANSETT
+>>>>>>> ba3331960cf4b53c9b0b84253b985e5634415ccb
       function update(){
         ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
         skip.update();
@@ -219,6 +248,8 @@ body, html {
         gameCanvas.height = window.innerHeight;
         update();
       };
+
+                                                //document.getElementById("theme").src = "lyd/theme2.mp3"; console.log("Theme switched.");
     </script>
   </body>
 </html>
