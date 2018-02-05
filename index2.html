@@ -20,6 +20,81 @@ body, html {
       var gameCanvas = document.getElementById("gameCanvas");
       var ctx = gameCanvas.getContext("2d");
       var theGameIsOn = true;
+      let projectiles = [];
+      let enemys = [];
+      let score = 0;
+      const Enemy = function(){
+        this.x = 0.5 * gameCanvas.width + Math.floor(400 * Math.random());
+        this.y = 0;
+        this.timer = 0;
+        this.width = 30;
+        this.height = 30;
+        this.update = function(){
+
+          this.timer++;
+          this.dx = Math.sin(this.timer / 100);
+          this.x += this.dx;
+          this.y += 1;
+
+        }
+        this.draw = function(){
+          ctx.beginPath();
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.fillStyle = "blue";
+          ctx.fillRect(-0.5 * this.width, -0.5 * this.height, this.width, this.height);
+          ctx.fill();
+          ctx.restore();
+          ctx.closePath();
+        }
+        enemys.push(this);
+      }
+      const Projectile = function(x, y, enemy){
+        this.x = x;
+        this.y = y;
+        this.width = 10;
+        this.height = 40;
+        this.enemy = enemy;
+        this.draw = function(){
+          ctx.beginPath();
+          ctx.save();
+          ctx.fillStyle = "red";
+          ctx.translate(this.x, this.y);
+          ctx.fillRect(-0.5 * this.width, -0.5 * this.height, this.width, this.height);
+          ctx.fill();
+          ctx.restore();
+          ctx.closePath();
+        }
+        this.update = function(){
+          if (this.enemy){
+            this.y += 8;
+          } else {
+            this.y -= 8;
+          }
+        }
+        projectiles.push(this);
+      }
+
+      function checkCollision(source, target){
+        let boundary = {
+          left: target.x - 0.5 * target.width,
+          right: target.x + 0.5 * target.width,
+          top: target.y - 0.5 * target.height,
+          bottom: target.y + 0.5 * target.height
+        }
+
+        if (source.x > boundary.left && source.x < boundary.right){
+          if (source.y > boundary.top && source.y < boundary.bottom){
+            return true;
+          } else {
+            return false;
+          }
+        }
+
+
+      }
+
+
       const skip_bilde = new Image();
             skip_bilde.src = 'skip.png';
     //tegner opp banen
@@ -40,6 +115,8 @@ body, html {
         opp: false,
         hoyre: false,
         ned: false,
+        skyt: false,
+        skyttimer: 30,
         draw: function(){
           ctx.beginPath();
           ctx.save();
@@ -54,7 +131,13 @@ body, html {
           if (this.hoyre) this.dx += 0.1;
           if (this.opp) this.dy -= 0.1;
           if (this.ned) this.dy += 0.1;
-
+          this.skyttimer--;
+          if (this.skyt){
+            if (this.skyttimer < 0){
+              let laser = new Projectile(this.xpos, this.ypos - 0.5 * this.hoyde, false);
+              this.skyttimer = 20;
+            }
+          }
           this.ypos += this.dy;
           this.xpos += this.dx;
       //hindrer skipet å gå utenfor banen
@@ -72,6 +155,7 @@ body, html {
           case 38: case 87: skip.opp = true; break;
           case 39: case 68: skip.hoyre = true; break;
           case 40: case 83: skip.ned = true; break;
+          case 32: skip.skyt = true; break;
         }
       }
       window.onkeyup = function(e){
@@ -80,15 +164,55 @@ body, html {
           case 38: case 87: skip.opp = false; break;
           case 39: case 68: skip.hoyre = false; break;
           case 40: case 83: skip.ned = false; break;
+          case 32: skip.skyt = false; break;
         }
       }
       //Oppdaterer bildet slik at alt ikke dør
+      let breivik = new Enemy();
       function update(){
         ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
         skip.update();
         skip.draw();
+
+        for (var e = 0; e < enemys.length; e++) {
+          enemys[e].update();
+          enemys[e].draw();
+        }
+        for (var i = 0; i < projectiles.length; i++){
+          projectiles[i].update();
+          projectiles[i].draw();
+          if (projectiles[i].y < 0){
+            projectiles.splice(i, 1);
+            i--;
+          } else {
+            if (projectiles[i].enemy){
+              if (checkCollision(projectiles[i], skip)){
+                // kys
+              }
+            } else {
+              for (var k = 0; k < enemys.length; k++){
+                if (checkCollision(projectiles[i], enemys[k])){
+                  score += 50;
+                  projectiles.splice(i, 1);
+                  i--;
+                  enemys.splice(k, 1);
+                  // k++;
+                }
+              }
+            }
+          }
+        }
+        ctx.beginPath();
+        ctx.font = "30px Arial";
+        ctx.fillText("Score: " + score, 10, 50);
+        ctx.fill();
+        ctx.closePath();
         requestAnimationFrame(update);
       }
+      setInterval(function () {
+        let enemy = new Enemy();
+      }, 1000);
+
       //Loader bildet inn hver gang spillet starter
       window.onload = function(){
         gameCanvas.width = window.innerWidth;
