@@ -141,10 +141,10 @@
         },
         //hastighet og sånn
         update: function(){
-          if (this.venstre) this.dx -= 0.1;
-          if (this.hoyre) this.dx += 0.1;
-          if (this.opp) this.dy -= 0.1;
-          if (this.ned) this.dy += 0.1;
+          if (this.venstre) this.dx -= 0.3;
+          if (this.hoyre) this.dx += 0.3;
+          if (this.opp) this.dy -= 0.3;
+          if (this.ned) this.dy += 0.3;
           this.skyttimer--;
           if (this.skyt){
             if (this.skyttimer < 0){
