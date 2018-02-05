@@ -209,10 +209,8 @@
               for (var k = 0; k < enemies.length; k++){
                 if (checkCollision(projectiles[i], enemies[k])){
                   score += 50;
-                  projectiles.splice(i, 1);
-                  i--;
                   enemies.splice(k, 1);
-                  // k++;
+                  
                 }
               }
             }
