@@ -22,10 +22,15 @@
       var gameCanvas = document.getElementById("gameCanvas");
       var ctx = gameCanvas.getContext("2d");
       var theGameIsOn = true;
+      var level = 1;
+      var spawnrate = 600;
+      var rpm = 180;
+      var scoreNeeded = 2500;
       let projectiles = [];
       let enemies = [];
       let score = 0;
       let liv = 3;
+        
       const Enemy = function(){
         this.x = 0.5 * gameCanvas.width + Math.floor(400 * Math.random());
         this.y = -150;
@@ -43,7 +48,7 @@
           this.y += 1;
 
           if (this.timer == 100) this.timer = 0;
-          if (this.skuddtimer == 180){
+          if (this.skuddtimer == rpm){
             var projectile = new Projectile(this.x, this.y, true);
             this.skuddtimer = 0;
           }
@@ -225,6 +230,7 @@
 
         ctx.beginPath();
         ctx.font = "30px Arial";
+        ctx.fillStyle = 'white';
         ctx.fillText("Score: " + score, 10, 50);
         ctx.fill();
         ctx.closePath();
@@ -238,15 +244,31 @@
           location.reload();
 
         }
-        if (score == 2500){
-          alert("Gratulerer, du vant!")
+        function nextLevel(){
+            score += 50;
+            spawnrate -= 15;
+            rpm -= 9;
+            liv += 1;
+            level += 1;
+            scoreNeeded += 2500;
+        }
+        function rageQuit(){
+          alert("Spillet er avsluttet.")
           location.reload();
+        }
+          
+        if (score == scoreNeeded){
+          if (confirm("Du har klart Level " + level +", gratulerer!\nØnsker du å fortsette eller å avslutte spillet?")) {
+            nextLevel();
+          } else {
+            rageQuit();
+          }
         }
         requestAnimationFrame(update);
       }
       let enemyspawner = setInterval(function () {
         let enemy = new Enemy();
-      }, 600);
+      }, spawnrate);
 
       //Loader bildet inn hver gang spillet starter
       window.onload = function(){
