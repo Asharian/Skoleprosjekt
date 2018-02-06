@@ -6,12 +6,8 @@
     padding: 0;
     overflow: hidden;
   }
-  #gameCanvas {
-
-  }
-  #starfield {
-    z-index: -1;
-    position: absolute;
+    canvas {
+        background-image: url(background.gif);
     }
 </style>
   <head>
@@ -21,8 +17,7 @@
   <body>
     <audio src = "lyd/theme.mp3" id ="theme" loop autoplay></audio>
     <canvas id="gameCanvas"></canvas>
-    <div id= "starfield"></div>
-    <script src="starfield.js"></script>
+    <img src = "background.gif" id ="background">
     <script>
       var gameCanvas = document.getElementById("gameCanvas");
       var ctx = gameCanvas.getContext("2d");
