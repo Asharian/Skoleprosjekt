@@ -1,138 +1,259 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <! -- CSS -- >
 <style>
-    body {
-        margin: 0px;
-        margin-top: 10vh;
-        padding: 0px;
-        background: black;
-        overflow: hidden;
-    }
-    .spillVindu {
-        height: 80vh;
-        width: 100vw;
-        background: lightblue;
-    }
-    #play {
-        position: relative;
-        top: 30%;
-        transform: translateY(-70%);
-        text-align: center;
-    }
+  body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
     canvas {
-        margin-top: -5vh;
-        width: 100%;
-        height: 100%;
-
+        background-image: url(background.gif);
     }
-    #skip {
-        position: absolute;
-        top: 75vh;
-        left: 50vw;
-        width: 10vw;
-        height: auto;
-    }
-  </style>
-<head>
-    <meta charset="UTF-8">
-    <title>Untitled Document</title>
-</head>
-<body>
-    <audio src = "lyd/theme.mp3" id ="theme" loop autoplay></audio>
-    <div class = "spillVindu">
-        <h1 id = "play">Velkommen til et jævla shitshow</h1>
-        <canvas id = "stjerner">
-
-        </canvas>
-        <img src = "comie1.png" id="skip">
-    </div>
-
+</style>
+  <head>
+    <meta charset="utf-8">
+    <title>Prosjekt</title>
+  </head>
+  <body>
+    <audio src = "theme.mp3" id ="theme" loop autoplay></audio>
+    <canvas id="gameCanvas"></canvas>
+    <img src = "background.gif" id ="background">
     <script>
-        //Main menu & theme
-        var mAktiv = false;
-        var spaceAktiv = false;
-        var theme = document.getElementById("theme");   // Definerer id = theme for js
-            theme.volume = 0.09;
+      var gameCanvas = document.getElementById("gameCanvas");
+      var ctx = gameCanvas.getContext("2d");
+      var theGameIsOn = true;
+      let projectiles = [];
+      let enemies = [];
+      let score = 0;
+      let liv = 3;
+      const Enemy = function(){
+        this.x = 0.5 * gameCanvas.width + Math.floor(400 * Math.random());
+        this.y = -150;
+        this.timer = 0;
+        this.width = 30;
+        this.height = 30;
+        this.skuddtimer = 0;
+        this.update = function(){
 
-        function toggleTheme() {
-            return theme.paused ? theme.play() : theme.pause();
-        };
+          this.timer++;
+          this.skuddtimer++;
 
-        document.onkeydown = function(e) {   //Space og M detection, er faen meg bugga og skada til tusen, fiks
-            switch (e.keyCode) {
-            case 77:  toggleTheme(); console.log("Music toggled."); break;
-            case 32:  document.getElementById("theme").src = "lyd/theme2.mp3"; console.log("Theme switched."); break;
-            //bevegelse
-            case 37: case 65: venstreAktiv = true;  break;
-            case 38: case 87: oppAktiv = true;      break;
-            case 39: case 68: høyreAktiv = true;    break;
-            case 40: case 83: nedAktiv = true;      break;
-            }
-        };
-    //Movement
-    var firkant = document.getElementById("skip");
-    var x = 100;
-    var y = 100;
-    var deltaX = 0;
-    var deltaY = 0;
-    var høyreAktiv = false;
-    var venstreAktiv = false;
-    var oppAktiv = false;
-    var nedAktiv = false;
-    var minX = 0;
-    var maxX = document.offsetWidth -252;
-    var minY = 0;
-    var maxY = document.offsetHeight - 209;
+          this.dx = Math.sin(this.timer / -100);
+          this.x += this.dx;
+          this.y += 1;
 
-    document.onkeyup = function(event) {
-      switch (event.keyCode) {
-        case 37: case 65: venstreAktiv = false;  break;
-        case 38: case 87: oppAktiv     = false;  break;
-        case 39: case 68: høyreAktiv   = false;  break;
-        case 40: case 83: nedAktiv     = false;  break;
+          if (this.timer == 100) this.timer = 0;
+          if (this.skuddtimer == 180){
+            var projectile = new Projectile(this.x, this.y, true);
+            this.skuddtimer = 0;
+          }
+        }
+        this.draw = function(){
+          ctx.beginPath();
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.fillStyle = "blue";
+          ctx.fillRect(-0.5 * this.width, -0.5 * this.height, this.width, this.height);
+          ctx.fill();
+          ctx.restore();
+          ctx.closePath();
+        }
+        enemies.push(this);
       }
-    };
-    //Canvas
-    var canvas = document.getElementById("stjerner");
-    var ctx = canvas.getContext("2d");
-        ctx.fillRect(40,20,50,30);
-    //Gameloop
-    function gameLoop() {
-          if (venstreAktiv) deltaX = -10;
-          if (høyreAktiv) deltaX = 10;
-          if (!venstreAktiv && !høyreAktiv) deltaX = 0;
-
-          if (oppAktiv) deltaY = -7;
-          if (nedAktiv) deltaY = 7;
-          if (!oppAktiv && !nedAktiv) deltaY = 0;
-
-          if (x >= maxX){
-              x = maxX -10;
-          } else if ( x <= minX){
-              x = minX + 10;
+      const Projectile = function(x, y, enemy){
+        this.x = x;
+        this.y = y;
+        this.width = 10;
+        this.height = 40;
+        this.enemy = enemy;
+        this.draw = function(){
+          ctx.beginPath();
+          ctx.save();
+          ctx.fillStyle = "red";
+          ctx.translate(this.x, this.y);
+          ctx.fillRect(-0.5 * this.width, -0.5 * this.height, this.width, this.height);
+          ctx.fill();
+          ctx.restore();
+          ctx.closePath();
+        }
+        this.update = function(){
+          if (this.enemy){
+            this.y += 8;
+          } else {
+            this.y -= 8;
           }
-
-          if ( y >= maxY){
-              y = maxY - 7;
-          } else if (y <= minY){
-              y = minY +7;
-          }
-
-          if (x >= window.innerWidth){
-            x = window.innerWidth -10;
-          }
-
-          x += deltaX;
-          y += deltaY;
-
-          skip.style.left = x + "px";
-          skip.style.top = y + "px";
-
-          requestAnimationFrame(gameLoop);
+        }
+        projectiles.push(this);
+      }
+       //sjekker om du blir truffet
+      function checkCollision(source, target){
+        let boundary = {
+          left: target.x - 0.5 * target.width,
+          right: target.x + 0.5 * target.width,
+          top: target.y - 0.5 * target.height,
+          bottom: target.y + 0.5 * target.height
         }
 
-        gameLoop();
+        if (source.x > boundary.left && source.x < boundary.right){
+          if (source.y > boundary.top && source.y < boundary.bottom){
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+      const skip_bilde = new Image();
+            skip_bilde.src = 'skip.gif';
+
+      var theme = document.getElementById("theme");   //Musikkvolum og toggling
+        theme.volume = 0.09;
+      function toggleTheme() {
+        return theme.paused ? theme.play() : theme.pause();
+      };
+
+    //tegner opp banen
+      var bane = {
+        width: gameCanvas.width,
+        height: gameCanvas.height,
+      };
+    //tegner opp skipet
+      var skip = {
+        bilde: skip_bilde,
+        "width": 50,
+        "height": 50,
+        "x": bane.width,
+        "y": bane.height,
+        dx: 0,
+        dy: 0,
+        venstre: false,
+        opp: false,
+        hoyre: false,
+        ned: false,
+        skyt: false,
+        skyttimer: 30,
+        draw: function(){
+          ctx.beginPath();
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.drawImage(this.bilde, -0.5 * this.width, -0.5 * this.height, this.width, this.height);
+          ctx.restore();
+          ctx.closePath();
+        },
+        //hastighet og sånn
+        update: function(){
+          if (this.venstre) this.dx -= 0.3;
+          if (this.hoyre) this.dx += 0.3;
+          if (this.opp) this.dy -= 0.3;
+          if (this.ned) this.dy += 0.3;
+          this.skyttimer--;
+          if (this.skyt){
+            if (this.skyttimer < 0){
+              let laser = new Projectile(this.x, this.y - 0.5 * this.height, false);
+              this.skyttimer = 10;
+            }
+          }
+          this.y += this.dy;
+          this.x += this.dx;
+      //hindrer skipet å gå utenfor banen
+          if (this.x - (0.5 * this.width) < 0) this.x = 0.5 * this.width, this.dx = 0;
+          if (this.x > gameCanvas.width) this.x = gameCanvas.width, this.dx = 0;
+
+          if (this.y - (0.5 * this.height) < 0) this.y = 0.5 * this.height, this.dy = 0;
+          if (this.y > gameCanvas.height) this.y = gameCanvas.height, this.dy = 0;
+        }
+      }
+      //kontroller
+      window.onkeydown = function(e){
+        switch (e.keyCode) {
+          case 37: case 65: skip.venstre = true; break;
+          case 38: case 87: skip.opp = true; break;
+          case 39: case 68: skip.hoyre = true; break;
+          case 40: case 83: skip.ned = true; break;
+          case 32: skip.skyt = true; break;
+          case 77: toggleTheme(); console.log("Music toggled."); break;
+
+        }
+      }
+      window.onkeyup = function(e){
+        switch (e.keyCode) {
+          case 37: case 65: skip.venstre = false; break;
+          case 38: case 87: skip.opp = false; break;
+          case 39: case 68: skip.hoyre = false; break;
+          case 40: case 83: skip.ned = false; break;
+          case 32: skip.skyt = false; break;
+        }
+      }
+      //Oppdaterer bildet slik at alt ikke dør
+      let spawner = new Enemy();
+      function update(){
+        ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+        skip.update();
+        skip.draw();
+        for (var e = 0; e < enemies.length; e++) {
+          enemies[e].update();
+          enemies[e].draw();
+          if (enemies[e].y > gameCanvas.height){
+            liv--;
+            enemies.splice(e, 1);
+            e--;
+          }
+        }
+        for (var i = 0; i < projectiles.length; i++){
+          projectiles[i].update();
+          projectiles[i].draw();
+          if (projectiles[i].y < 0){
+            projectiles.splice(i, 1);
+            i--;
+          } else {
+            if (projectiles[i].enemy){
+              if (checkCollision(projectiles[i], skip)){
+                projectiles.splice(i, 1);
+                i--;
+                liv--;
+              }
+            } else {
+              for (var k = 0; k < enemies.length; k++){
+                if (checkCollision(projectiles[i], enemies[k])){
+                  score += 50;
+                  enemies.splice(k, 1);
+
+                }
+              }
+            }
+          }
+        }
+
+        ctx.beginPath();
+        ctx.font = "30px Arial";
+        ctx.fillText("Score: " + score, 10, 50);
+        ctx.fill();
+        ctx.closePath();
+        ctx.beginPath();
+        ctx.font = "30px Arial";
+        ctx.fillText("Liv: " + liv, 10, 100);
+        ctx.fill();
+        ctx.closePath();
+        if (liv == 0){
+          alert("Du tapte, prøv igjen!");
+          location.reload();
+
+        }
+        if (score == 2500){
+          alert("Gratulerer, du vant!")
+          location.reload();
+        }
+        requestAnimationFrame(update);
+      }
+      let enemyspawner = setInterval(function () {
+        let enemy = new Enemy();
+      }, 600);
+
+      //Loader bildet inn hver gang spillet starter
+      window.onload = function(){
+        gameCanvas.width = window.innerWidth;
+        gameCanvas.height = window.innerHeight;
+        update();
+      };
     </script>
   </body>
 </html>
