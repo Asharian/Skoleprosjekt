@@ -135,7 +135,7 @@
         hoyre: false,
         ned: false,
         skyt: false,
-        skyttimer: 30,
+        skytTimer: 30,
         draw: function(){
           ctx.beginPath();
           ctx.save();
@@ -150,11 +150,11 @@
           if (this.hoyre) this.dx += 0.3;
           if (this.opp) this.dy -= 0.3;
           if (this.ned) this.dy += 0.3;
-          this.skyttimer--;
+          this.skytTimer--;
           if (this.skyt){
-            if (this.skyttimer < 0){
+            if (this.skytTimer < 0){
               let laser = new Projectile(this.x, this.y - 0.5 * this.height, false);
-              this.skyttimer = 10;
+              this.skytTimer = 10;
             }
           }
           this.y += this.dy;
@@ -227,18 +227,17 @@
             }
           }
         }
-
+        //Canvas for å vise level, score og liv.
         ctx.beginPath();
         ctx.font = "30px Arial";
         ctx.fillStyle = 'white';
-        ctx.fillText("Score: " + score, 10, 50);
+        ctx.fillText("Level: " + level, 10, 50);
+        ctx.fillText("Score: " + score, 10, 100);
+        ctx.fillText("Liv: " + liv, 10, 150);
+        ctx.fillText("Trykk på M for å starte/stoppe musikken.", 10, 950);
         ctx.fill();
         ctx.closePath();
-        ctx.beginPath();
-        ctx.font = "30px Arial";
-        ctx.fillText("Liv: " + liv, 10, 100);
-        ctx.fill();
-        ctx.closePath();
+
         if (liv == 0){
           alert("Du tapte, prøv igjen!");
           location.reload();
@@ -256,7 +255,7 @@
           alert("Spillet er avsluttet.")
           location.reload();
         }
-          
+
         if (score == scoreNeeded){
           if (confirm("Du har klart Level " + level +", gratulerer!\nØnsker du å fortsette eller å avslutte spillet?")) {
             nextLevel();
