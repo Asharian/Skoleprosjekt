@@ -30,7 +30,18 @@
       let enemies = [];
       let score = 0;
       let liv = 3;
-        
+
+      var theme = document.getElementById("theme");
+        theme.volume = 0.09;
+      function toggleTheme() {
+        return theme.paused ? theme.play() : theme.pause();
+      };
+
+      const skip_bilde = new Image();
+            skip_bilde.src = 'skip.gif';
+      const enemy_bilde = new Image();
+            enemy_bilde.src = 'enemy.png';
+
       const Enemy = function(){
         this.x = 0.5 * gameCanvas.width + Math.floor(400 * Math.random());
         this.y = -150;
@@ -57,9 +68,7 @@
           ctx.beginPath();
           ctx.save();
           ctx.translate(this.x, this.y);
-          ctx.fillStyle = "blue";
-          ctx.fillRect(-0.5 * this.width, -0.5 * this.height, this.width, this.height);
-          ctx.fill();
+          ctx.drawImage(enemy_bilde, -0.5 * this.width, -0.5 * this.height, this.width, this.height);
           ctx.restore();
           ctx.closePath();
         }
@@ -107,15 +116,6 @@
           }
         }
       }
-      const skip_bilde = new Image();
-            skip_bilde.src = 'skip.gif';
-
-      var theme = document.getElementById("theme");   //Musikkvolum og toggling
-        theme.volume = 0.09;
-      function toggleTheme() {
-        return theme.paused ? theme.play() : theme.pause();
-      };
-
     //tegner opp banen
       var bane = {
         width: gameCanvas.width,
