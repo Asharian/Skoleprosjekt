@@ -23,7 +23,7 @@
       var ctx = gameCanvas.getContext("2d");
       var theGameIsOn = true;
       var level = 1;
-      var spawnrate = 600;
+      var spawnrate = 800;
       var rpm = 180;
       var scoreNeeded = 2500;
       let projectiles = [];
@@ -42,6 +42,11 @@
       const enemy_bilde = new Image();
             enemy_bilde.src = 'enemy.png';
 
+      var bane = {
+          width: gameCanvas.width,
+          height: gameCanvas.height,
+        };
+
       const Enemy = function(){
         this.x = 0.5 * gameCanvas.width + Math.floor(400 * Math.random());
         this.y = -150;
@@ -49,7 +54,7 @@
         this.width = 30;
         this.height = 30;
         this.skuddtimer = 0;
-        this.update = function(){
+        this.gameLoop = function(){
 
           this.timer++;
           this.skuddtimer++;
@@ -60,7 +65,7 @@
 
           if (this.timer == 100) this.timer = 0;
           if (this.skuddtimer == rpm){
-            var projectile = new Projectile(this.x, this.y, true);
+            var projectile = new skudd(this.x, this.y, true);
             this.skuddtimer = 0;
           }
         }
@@ -74,11 +79,11 @@
         }
         enemies.push(this);
       }
-      const Projectile = function(x, y, enemy){
+      const skudd = function(x, y, enemy){
         this.x = x;
         this.y = y;
         this.width = 10;
-        this.height = 40;
+        this.height = 30;
         this.enemy = enemy;
         this.draw = function(){
           ctx.beginPath();
@@ -90,7 +95,7 @@
           ctx.restore();
           ctx.closePath();
         }
-        this.update = function(){
+        this.gameLoop = function(){
           if (this.enemy){
             this.y += 8;
           } else {
@@ -99,8 +104,8 @@
         }
         projectiles.push(this);
       }
-       //sjekker om du blir truffet
-      function checkCollision(source, target){
+
+      function sjekkTreff(kilde, target){
         let boundary = {
           left: target.x - 0.5 * target.width,
           right: target.x + 0.5 * target.width,
@@ -108,26 +113,21 @@
           bottom: target.y + 0.5 * target.height
         }
 
-        if (source.x > boundary.left && source.x < boundary.right){
-          if (source.y > boundary.top && source.y < boundary.bottom){
+        if (kilde.x > boundary.left && kilde.x < boundary.right){
+          if (kilde.y > boundary.top && kilde.y < boundary.bottom){
             return true;
           } else {
             return false;
           }
         }
       }
-    //tegner opp banen
-      var bane = {
-        width: gameCanvas.width,
-        height: gameCanvas.height,
-      };
-    //tegner opp skipet
+
       var skip = {
         bilde: skip_bilde,
         "width": 50,
         "height": 50,
-        "x": bane.width,
-        "y": bane.height,
+        "x": 600,
+        "y": 500,
         dx: 0,
         dy: 0,
         venstre: false,
@@ -144,22 +144,22 @@
           ctx.restore();
           ctx.closePath();
         },
-        //hastighet og sånn
-        update: function(){
-          if (this.venstre) this.dx -= 0.3;
-          if (this.hoyre) this.dx += 0.3;
-          if (this.opp) this.dy -= 0.3;
-          if (this.ned) this.dy += 0.3;
+
+        gameLoop: function(){
+          if (this.venstre) this.dx -= 0.2;
+          if (this.hoyre) this.dx += 0.2;
+          if (this.opp) this.dy -= 0.2;
+          if (this.ned) this.dy += 0.2;
           this.skytTimer--;
           if (this.skyt){
             if (this.skytTimer < 0){
-              let laser = new Projectile(this.x, this.y - 0.5 * this.height, false);
+              let laser = new skudd(this.x, this.y - 0.5 * this.height, false);
               this.skytTimer = 10;
             }
           }
           this.y += this.dy;
           this.x += this.dx;
-      //hindrer skipet å gå utenfor banen
+
           if (this.x - (0.5 * this.width) < 0) this.x = 0.5 * this.width, this.dx = 0;
           if (this.x > gameCanvas.width) this.x = gameCanvas.width, this.dx = 0;
 
@@ -167,7 +167,7 @@
           if (this.y > gameCanvas.height) this.y = gameCanvas.height, this.dy = 0;
         }
       }
-      //kontroller
+
       window.onkeydown = function(e){
         switch (e.keyCode) {
           case 37: case 65: skip.venstre = true; break;
@@ -188,14 +188,14 @@
           case 32: skip.skyt = false; break;
         }
       }
-      //Oppdaterer bildet slik at alt ikke dør
+
       let spawner = new Enemy();
-      function update(){
+      function gameLoop(){
         ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-        skip.update();
+        skip.gameLoop();
         skip.draw();
         for (var e = 0; e < enemies.length; e++) {
-          enemies[e].update();
+          enemies[e].gameLoop();
           enemies[e].draw();
           if (enemies[e].y > gameCanvas.height){
             liv--;
@@ -204,21 +204,21 @@
           }
         }
         for (var i = 0; i < projectiles.length; i++){
-          projectiles[i].update();
+          projectiles[i].gameLoop();
           projectiles[i].draw();
           if (projectiles[i].y < 0){
             projectiles.splice(i, 1);
             i--;
           } else {
             if (projectiles[i].enemy){
-              if (checkCollision(projectiles[i], skip)){
+              if (sjekkTreff(projectiles[i], skip)){
                 projectiles.splice(i, 1);
                 i--;
                 liv--;
               }
             } else {
               for (var k = 0; k < enemies.length; k++){
-                if (checkCollision(projectiles[i], enemies[k])){
+                if (sjekkTreff(projectiles[i], enemies[k])){
                   score += 50;
                   enemies.splice(k, 1);
 
@@ -257,23 +257,22 @@
         }
 
         if (score == scoreNeeded){
-          if (confirm("Du har klart Level " + level +", gratulerer!\nØnsker du å fortsette eller å avslutte spillet?")) {
+          if (confirm("Du har klart Level " + level +", gratulerer!\nØnsker du å fortsette eller å avslutte spillet? (ok = fortsett, avbryt = avslutt)")) {
             nextLevel();
           } else {
             rageQuit();
           }
         }
-        requestAnimationFrame(update);
+        requestAnimationFrame(gameLoop);
       }
       let enemyspawner = setInterval(function () {
         let enemy = new Enemy();
       }, spawnrate);
 
-      //Loader bildet inn hver gang spillet starter
       window.onload = function(){
         gameCanvas.width = window.innerWidth;
         gameCanvas.height = window.innerHeight;
-        update();
+        gameLoop();
       };
     </script>
   </body>
